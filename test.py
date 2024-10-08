@@ -1,29 +1,32 @@
 import unittest
-from snake_game import snake, cube  # Asegúrate de tener el código del juego en 'snake_game.py'
+from snake_game import snake, cube, randomSnack
 
 class TestSnakeGame(unittest.TestCase):
     
     def setUp(self):
-        # Este método se ejecuta antes de cada prueba
-        self.s = snake((255, 0, 0), (10, 10))  # Crear una instancia de la serpiente
+        self.snake = snake((255,0,0), (10, 10))  # Inicializa la serpiente en la posición (10, 10)
+        self.snake.addCube()  # Añade un cubo para simular el cuerpo de la serpiente
+    
+    def test_initial_position(self):
+        """Prueba que la serpiente inicie en la posición correcta."""
+        self.assertEqual(self.snake.head.pos, (10, 10))
+    
+    def test_move_right(self):
+        """Prueba el movimiento hacia la derecha."""
+        self.snake.dirnx, self.snake.dirny = 1, 0
+        self.snake.move()
+        self.assertEqual(self.snake.head.pos, (11, 10))  # Verificamos que se movió correctamente
 
-    def test_snake_initial_position(self):
-        """Verifica que el snake comience en la posición correcta"""
-        self.assertEqual(self.s.head.pos, (10, 10))  # El snake debería empezar en (10, 10)
-
-    def test_snake_move_right(self):
-        """Simula un movimiento hacia la derecha"""
-        self.s.dirnx = 1  # Dirección derecha
-        self.s.dirny = 0  # No moverse verticalmente
-        self.s.move()  # Ejecuta el movimiento
-        self.assertEqual(self.s.head.pos, (11, 10))  # El snake debe haber avanzado a (11, 10)
-
-    def test_snake_grow(self):
-        """Prueba que el snake crezca correctamente"""
-        initial_length = len(self.s.body)  # Longitud inicial del snake
-        self.s.addCube()  # Simula comer un snack y crecer
-        new_length = len(self.s.body)  # Nueva longitud
-        self.assertEqual(new_length, initial_length + 1)  # Verifica que el snake ha crecido en 1
+    def test_grow_on_eat(self):
+        """Prueba que la serpiente crezca al comer un snack."""
+        initial_length = len(self.snake.body)
+        self.snake.addCube()  # Simulamos que la serpiente come un snack
+        self.assertEqual(len(self.snake.body), initial_length + 1)  # Verificamos que ha crecido
+    
+    def test_random_snack_generation(self):
+        """Prueba que el snack se genere en una posición válida."""
+        snack_pos = randomSnack(20, self.snake)  # Generamos una posición para el snack
+        self.assertNotIn(snack_pos, list(map(lambda c: c.pos, self.snake.body)))  # Verificamos que no esté sobre la serpiente
 
 if __name__ == '__main__':
     unittest.main()

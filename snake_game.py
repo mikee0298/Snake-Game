@@ -2,8 +2,6 @@ import math
 import random
 import pygame
 import random
-import tkinter as tk
-from tkinter import messagebox
 
 width = 500
 height = 500
@@ -11,21 +9,19 @@ height = 500
 cols = 25
 rows = 20
 
-
 class cube():
     rows = 20
     w = 500
     def __init__(self, start, dirnx=1, dirny=0, color=(255,0,0)):
         self.pos = start
         self.dirnx = dirnx
-        self.dirny = dirny # "L", "R", "U", "D"
+        self.dirny = dirny
         self.color = color
 
     def move(self, dirnx, dirny):
         self.dirnx = dirnx
         self.dirny = dirny
         self.pos  = (self.pos[0] + self.dirnx, self.pos[1] + self.dirny)
-            
 
     def draw(self, surface, eyes=False):
         dis = self.w // self.rows
@@ -40,7 +36,6 @@ class cube():
             circleMiddle2 = (i*dis + dis -radius*2, j*dis+8)
             pygame.draw.circle(surface, (0,0,0), circleMiddle, radius)
             pygame.draw.circle(surface, (0,0,0), circleMiddle2, radius)
-        
 
 
 class snake():
@@ -48,7 +43,6 @@ class snake():
     turns = {}
     
     def __init__(self, color, pos):
-        #pos is given as coordinates on the grid ex (1,5)
         self.color = color
         self.head = cube(pos)
         self.body.append(self.head)
@@ -89,7 +83,6 @@ class snake():
             else:
                 c.move(c.dirnx,c.dirny)
         
-        
     def reset(self,pos):
         self.head = cube(pos)
         self.body = []
@@ -121,33 +114,6 @@ class snake():
             else:
                 c.draw(surface)
 
-
-
-def redrawWindow():
-    global win
-    win.fill((0,0,0))
-    drawGrid(width, rows, win)
-    s.draw(win)
-    snack.draw(win)
-    pygame.display.update()
-    pass
-
-
-
-def drawGrid(w, rows, surface):
-    sizeBtwn = w // rows
-
-    x = 0
-    y = 0
-    for l in range(rows):
-        x = x + sizeBtwn
-        y = y +sizeBtwn
-
-        pygame.draw.line(surface, (255,255,255), (x, 0),(x,w))
-        pygame.draw.line(surface, (255,255,255), (0, y),(w,y))
-    
-
-
 def randomSnack(rows, item):
     positions = item.body
 
@@ -155,12 +121,11 @@ def randomSnack(rows, item):
         x = random.randrange(1,rows-1)
         y = random.randrange(1,rows-1)
         if len(list(filter(lambda z:z.pos == (x,y), positions))) > 0:
-               continue
+            continue
         else:
-               break
+            break
 
     return (x,y)
-
 
 def main():
     global s, snack, win
@@ -192,7 +157,5 @@ def main():
                     
         redrawWindow()
 
-main()
-    
-
-    
+if __name__ == '__main__':
+    main()
